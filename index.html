@@ -1,0 +1,1162 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>先別匯款</title>
+<meta name="description" content="貼上可疑訊息，在瀏覽器本機標出詐騙紅旗。資料依據 165 打詐儀錶板與數位發展部公告。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@400;500;700&family=LXGW+WenKai+TC&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* 版面：檢驗台。左邊是訊息原文，右邊是用螢光筆批改過的副本與鑑定印章；往下依序是測驗、數據、手法、NotebookLM 產出、求助步驟。 */
+:root {
+  --paper: #EDF0F5;
+  --sheet: #FFFFFF;
+  --ink: #141B2D;
+  --ink-2: #485267;
+  --ink-3: #697387;
+  --rule: #D2D8E2;
+  --stamp: #2340B8;
+  --stamp-ink: #FFFFFF;
+  --stamp-soft: #E2E7FA;
+  --danger: #B42323;
+  --warn: #9A5A00;
+  --safe: #1B7444;
+  --danger-soft: #FAE6E6;
+  --warn-soft: #FCEFDA;
+  --safe-soft: #E1F3E8;
+  --hl-lure: #FFE55C;
+  --hl-press: #FFC27A;
+  --hl-fake: #D7C4FF;
+  --hl-off: #A6EAAE;
+  --hl-pay: #FFB1D0;
+  --hl-acct: #A9D7FF;
+  --bar-muted: #A3ADBF;
+  --bubble: #F4F6FA;
+  --f-display: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --f-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+  --f-note: "LXGW WenKai TC", "Kaiti TC", "BiauKai", "DFKai-SB", serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0D1220; --sheet: #151C2D; --ink: #E6EAF2; --ink-2: #AEB7C8; --ink-3: #8D96A9; --rule: #2A3349;
+    --stamp: #8FA5FF; --stamp-ink: #0D1220; --stamp-soft: #1E284A;
+    --danger: #FF7B7B; --warn: #F0B45F; --safe: #6CD39A; --danger-soft: #3A1A20; --warn-soft: #382914; --safe-soft: #14301F;
+    --hl-lure: #6A5A06; --hl-press: #7A4416; --hl-fake: #4C3A8C; --hl-off: #1E6A35; --hl-pay: #7C2752; --hl-acct: #1C4E80;
+    --bar-muted: #4E5870; --bubble: #1B2335;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0D1220; --sheet: #151C2D; --ink: #E6EAF2; --ink-2: #AEB7C8; --ink-3: #8D96A9; --rule: #2A3349;
+  --stamp: #8FA5FF; --stamp-ink: #0D1220; --stamp-soft: #1E284A;
+  --danger: #FF7B7B; --warn: #F0B45F; --safe: #6CD39A; --danger-soft: #3A1A20; --warn-soft: #382914; --safe-soft: #14301F;
+  --hl-lure: #6A5A06; --hl-press: #7A4416; --hl-fake: #4C3A8C; --hl-off: #1E6A35; --hl-pay: #7C2752; --hl-acct: #1C4E80;
+  --bar-muted: #4E5870; --bubble: #1B2335;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 16px/1.75 var(--f-body);
+  padding-inline: 16px;
+  padding-block: 0 56px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; }
+a { color: var(--stamp); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--stamp); outline-offset: 2px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+/* 頁首與導覽 */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  margin-inline: -16px; padding-inline: 16px;
+}
+.top .wrap { display: flex; align-items: center; gap: 8px 20px; flex-wrap: wrap; padding-block: 10px; }
+.brand { font: 900 20px/1 var(--f-display); letter-spacing: .04em; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+.brand-seal { width: 26px; height: 26px; border: 2px solid var(--danger); color: var(--danger); border-radius: 4px; display: grid; place-items: center; font-size: 13px; transform: rotate(-6deg); }
+.nav { display: flex; gap: 2px 14px; flex-wrap: wrap; font-size: 14px; }
+.nav a { color: var(--ink-2); text-decoration: none; padding: 4px 0; }
+.nav a:hover { color: var(--stamp); }
+
+/* 開場 */
+.intro { padding-block: 40px 22px; display: grid; gap: 14px; max-width: 760px; }
+.eyebrow { font: 600 12.5px/1.4 var(--f-mono); letter-spacing: .12em; color: var(--stamp); text-transform: uppercase; }
+.intro h1 { font: 900 clamp(40px, 7vw, 68px)/1.08 var(--f-display); letter-spacing: .02em; }
+.intro h1 em { font-style: normal; background: linear-gradient(transparent 58%, var(--hl-pay) 58%, var(--hl-pay) 92%, transparent 92%); padding-inline: 2px; }
+.intro .lede { font-size: 18px; color: var(--ink-2); max-width: 62ch; }
+.privacy { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--safe); background: var(--safe-soft); padding: 4px 12px; border-radius: 14px; width: fit-content; }
+
+/* 檢驗台 */
+.desk { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .desk { grid-template-columns: minmax(0, 1fr); } }
+.sheet { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 20px; min-width: 0; }
+.sheet h2 { font: 700 15px/1.4 var(--f-body); color: var(--ink-2); letter-spacing: .06em; margin-bottom: 12px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.sheet h2 small { font: 400 12.5px var(--f-body); color: var(--ink-3); letter-spacing: 0; }
+.samples { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.chip-btn { font: 500 13.5px/1 var(--f-body); color: var(--ink-2); background: var(--bubble); border: 1px solid var(--rule); border-radius: 99px; padding: 7px 12px; cursor: pointer; }
+.chip-btn:hover { border-color: var(--stamp); color: var(--stamp); }
+.chip-btn[aria-pressed="true"] { background: var(--stamp); border-color: var(--stamp); color: var(--stamp-ink); }
+.meta-row { display: grid; grid-template-columns: minmax(0, 1fr) 128px; gap: 10px; margin-bottom: 10px; }
+.field { display: grid; gap: 4px; font-size: 13px; color: var(--ink-3); }
+.field input, textarea {
+  font: 400 15px/1.7 var(--f-body); color: var(--ink); background: var(--bubble);
+  border: 1px solid var(--rule); border-radius: 8px; padding: 8px 10px; width: 100%;
+}
+textarea { min-height: 220px; resize: vertical; font-size: 16px; padding: 12px 14px; }
+.field input::placeholder, textarea::placeholder { color: var(--ink-3); }
+.hint { font-size: 13px; color: var(--ink-3); margin-top: 8px; }
+
+/* 批改副本 */
+.report { display: grid; gap: 16px; }
+.verdict { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center; }
+.stamp {
+  font: 900 20px/1.15 var(--f-display); letter-spacing: .08em; text-align: center;
+  border: 3px double currentColor; border-radius: 6px; padding: 10px 12px; min-width: 132px;
+  transform: rotate(-4deg); color: var(--ink-3);
+}
+.stamp small { display: block; font: 600 11px/1.4 var(--f-mono); letter-spacing: .1em; margin-top: 4px; }
+.stamp.lv-high { color: var(--danger); }
+.stamp.lv-mid { color: var(--warn); }
+.stamp.lv-low { color: var(--warn); }
+.stamp.lv-none { color: var(--safe); }
+.stamp.pop { animation: stamp .42s cubic-bezier(.2,.9,.3,1.3); }
+@keyframes stamp { from { transform: rotate(-12deg) scale(1.35); opacity: .2; } to { transform: rotate(-4deg) scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .stamp.pop { animation: none; } }
+.meter { display: grid; gap: 6px; }
+.meter-track { height: 10px; border-radius: 99px; background: var(--bubble); border: 1px solid var(--rule); overflow: hidden; }
+.meter-fill { height: 100%; width: 0; border-radius: 99px; background: var(--ink-3); transition: width .35s ease; }
+.meter-legend { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-3); }
+.summary { font-size: 15px; color: var(--ink-2); }
+.summary b { color: var(--ink); }
+
+.marked {
+  font: 400 16.5px/2.05 var(--f-body); white-space: pre-wrap; word-break: break-word;
+  background: var(--bubble); border-radius: 10px; padding: 14px 16px; border: 1px solid var(--rule);
+}
+mark.hl { color: var(--ink); border-radius: 3px; padding: 1px 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+mark.hl sup { font: 600 10.5px/1 var(--f-mono); color: var(--ink-2); margin-left: 1px; }
+.hl-lure { background: var(--hl-lure); }
+.hl-press { background: var(--hl-press); }
+.hl-fake { background: var(--hl-fake); }
+.hl-off { background: var(--hl-off); }
+.hl-pay { background: var(--hl-pay); }
+.hl-acct { background: var(--hl-acct); }
+.url-mark { text-decoration: underline wavy var(--danger); text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
+.url-mark.ok { text-decoration-color: var(--safe); }
+.neg-mark { text-decoration: underline dotted var(--safe); text-underline-offset: 4px; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+
+.findings { display: grid; gap: 10px; }
+.finding { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; }
+.finding .n { font: 600 12px/26px var(--f-mono); text-align: center; border-radius: 6px; color: var(--ink); }
+.finding .t { font-size: 15px; }
+.finding .t b { font-weight: 700; }
+.finding .t .note { display: block; font: 400 15.5px/1.6 var(--f-note); color: var(--ink-2); }
+.group-label { font: 600 12px/1.4 var(--f-mono); color: var(--ink-3); letter-spacing: .1em; margin-top: 4px; }
+
+.checks { display: grid; gap: 6px; font-size: 14.5px; }
+.check { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; }
+.check .i { font: 700 14px/1.6 var(--f-mono); }
+.check.bad .i { color: var(--danger); }
+.check.ok .i { color: var(--safe); }
+.check.meh .i { color: var(--warn); }
+.url-host { font-family: var(--f-mono); font-size: 13.5px; word-break: break-all; }
+
+.typeguess { border-left: 3px solid var(--stamp); padding: 4px 0 4px 12px; }
+.typeguess b { font-family: var(--f-display); font-size: 17px; }
+.typeguess p { font: 400 16px/1.6 var(--f-note); color: var(--ink-2); }
+
+.actions { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; font-size: 15px; }
+.actions li::marker { color: var(--stamp); font-weight: 700; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn { font: 700 14.5px/1 var(--f-body); border-radius: 8px; padding: 11px 16px; cursor: pointer; border: 1px solid var(--stamp); background: var(--stamp); color: var(--stamp-ink); }
+.btn.ghost { background: transparent; color: var(--stamp); }
+.btn:hover { filter: brightness(1.08); }
+.toast { font-size: 13.5px; color: var(--safe); min-height: 1.4em; }
+.copy-fallback { width: 100%; min-height: 120px; font-size: 14px; }
+
+/* 區塊通用 */
+.sec { padding-block: 64px 0; display: grid; gap: 22px; scroll-margin-top: 64px; }
+.sec-head { display: grid; gap: 8px; max-width: 760px; }
+.sec-head h2 { font: 900 clamp(28px, 4.2vw, 40px)/1.2 var(--f-display); letter-spacing: .02em; }
+.sec-head p { color: var(--ink-2); font-size: 16.5px; max-width: 64ch; }
+
+/* 測驗 */
+.quiz { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .quiz { grid-template-columns: minmax(0, 1fr); } }
+.phone { background: var(--sheet); border: 1px solid var(--rule); border-radius: 22px; padding: 18px; display: grid; gap: 12px; min-width: 0; }
+.phone-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-3); flex-wrap: wrap; }
+.channel { font: 600 12px/1 var(--f-mono); letter-spacing: .08em; color: var(--stamp); background: var(--stamp-soft); padding: 5px 9px; border-radius: 99px; }
+.sender { font-weight: 700; color: var(--ink); font-size: 15px; }
+.sender small { font-weight: 400; color: var(--ink-3); margin-left: 6px; }
+.bubble { background: var(--bubble); border: 1px solid var(--rule); border-radius: 4px 16px 16px 16px; padding: 12px 14px; font-size: 16px; line-height: 1.8; white-space: pre-wrap; word-break: break-word; }
+.ctx { font-size: 13px; color: var(--ink-3); }
+.answer-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ans { font: 700 16px/1 var(--f-body); padding: 14px; border-radius: 10px; cursor: pointer; border: 1.5px solid var(--rule); background: var(--sheet); color: var(--ink); }
+.ans:hover:not(:disabled) { border-color: var(--stamp); }
+.ans:disabled { cursor: default; opacity: .55; }
+.ans.picked { opacity: 1; border-color: var(--ink); }
+.dots { display: flex; gap: 6px; flex-wrap: wrap; }
+.dot { width: 22px; height: 6px; border-radius: 99px; background: var(--rule); }
+.dot.cur { background: var(--ink-3); }
+.dot.right { background: var(--safe); }
+.dot.wrong { background: var(--danger); }
+.explain { display: grid; gap: 12px; }
+.explain-card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px 20px; display: grid; gap: 10px; }
+.explain-card .res { font: 900 22px/1.3 var(--f-display); }
+.explain-card .res.ok { color: var(--safe); }
+.explain-card .res.no { color: var(--danger); }
+.explain-card p { font-size: 15.5px; color: var(--ink-2); }
+.explain-card .clue { font: 400 17px/1.6 var(--f-note); color: var(--ink); }
+.explain-idle { color: var(--ink-3); font-size: 15px; border: 1px dashed var(--rule); border-radius: 12px; padding: 22px; }
+.score-big { font: 900 54px/1 var(--f-display); }
+
+/* 數據 */
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 720px) { .tiles { grid-template-columns: minmax(0, 1fr); } }
+.tile { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 16px 18px; display: grid; gap: 4px; }
+.tile .k { font-size: 13px; color: var(--ink-3); }
+.tile .v { font: 600 30px/1.2 var(--f-mono); font-variant-numeric: tabular-nums; }
+.tile .v small { font: 500 14px var(--f-body); color: var(--ink-2); margin-left: 4px; }
+.tile .d { font-size: 13px; color: var(--ink-2); }
+.insight { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 20px; display: grid; gap: 18px; }
+.insight-head { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; justify-content: space-between; }
+.insight-head h3 { font: 900 22px/1.35 var(--f-display); }
+.insight-head h3 mark { background: var(--stamp-soft); color: var(--ink); padding-inline: 4px; border-radius: 3px; }
+.chart-legend { display: flex; gap: 14px; font-size: 13px; color: var(--ink-2); flex-wrap: wrap; }
+.chart-legend span { display: inline-flex; gap: 6px; align-items: center; }
+.multiples { display: grid; grid-template-columns: 150px repeat(3, minmax(0, 1fr)); gap: 0 18px; }
+@media (max-width: 760px) { .multiples { grid-template-columns: 112px minmax(0, 1fr); } .multiples .col-h.c2, .multiples .col-h.c3, .multiples .cell.c2, .multiples .cell.c3 { display: none; } .multiples.show-c2 .col-h.c2, .multiples.show-c2 .cell.c2 { display: grid; } .multiples.show-c2 .col-h.c1, .multiples.show-c2 .cell.c1 { display: none; } .multiples.show-c3 .col-h.c3, .multiples.show-c3 .cell.c3 { display: grid; } .multiples.show-c3 .col-h.c1, .multiples.show-c3 .cell.c1 { display: none; } }
+.measure-tabs { display: none; gap: 6px; flex-wrap: wrap; }
+@media (max-width: 760px) { .measure-tabs { display: flex; } }
+.col-h { font: 600 12.5px/1.4 var(--f-body); color: var(--ink-3); padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
+.row-l { font-size: 14px; padding-block: 12px; border-bottom: 1px solid var(--rule); display: flex; align-items: center; color: var(--ink); line-height: 1.35; }
+.cell { padding-block: 12px; border-bottom: 1px solid var(--rule); display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; align-content: center; position: relative; }
+.bar-track { height: 12px; position: relative; }
+.bar { height: 12px; border-radius: 0 4px 4px 0; background: var(--bar-muted); min-width: 2px; transition: filter .15s; }
+.bar.inv { background: var(--stamp); }
+.cell:hover .bar, .cell:focus-visible .bar { filter: brightness(1.15); }
+.val { font: 500 13px/1.2 var(--f-mono); font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.tip { position: absolute; z-index: 5; left: 0; bottom: calc(100% - 6px); background: var(--ink); color: var(--paper); font-size: 12.5px; line-height: 1.5; padding: 6px 9px; border-radius: 6px; white-space: nowrap; pointer-events: none; }
+.chart-note { font-size: 13px; color: var(--ink-3); }
+
+/* 手法圖鑑 */
+.types { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 980px) { .types { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .types { grid-template-columns: minmax(0, 1fr); } }
+.type { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; gap: 10px; align-content: start; }
+.type h3 { font: 900 19px/1.35 var(--f-display); }
+.type .tag { font: 600 11.5px/1 var(--f-mono); color: var(--ink-3); letter-spacing: .08em; }
+.type ul { margin: 0; padding-left: 1.1em; font-size: 14.5px; color: var(--ink-2); display: grid; gap: 4px; }
+.type .rule { font: 400 16.5px/1.55 var(--f-note); color: var(--ink); border-top: 1px dashed var(--rule); padding-top: 10px; }
+
+/* NotebookLM */
+.media-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 900px) { .media-grid { grid-template-columns: minmax(0, 1fr); } }
+.media { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; gap: 10px; min-width: 0; }
+.media h3 { font: 700 17px/1.4 var(--f-body); }
+.media .src { font-size: 13px; color: var(--ink-3); }
+.media video, .media img { width: 100%; max-width: 100%; border-radius: 8px; display: block; background: var(--bubble); }
+.media audio { width: 100%; }
+.media-stack { display: grid; gap: 16px; min-width: 0; }
+.pending { border: 1px dashed var(--rule); border-radius: 8px; padding: 18px; font-size: 14px; color: var(--ink-3); background: var(--bubble); }
+.how { font-size: 14px; color: var(--ink-2); }
+.factcheck { font-size: 14px; color: var(--ink-2); background: var(--danger-soft); border-radius: 8px; padding: 10px 12px; }
+.factcheck b { color: var(--danger); }
+.shot-stack { display: grid; gap: 10px; }
+.shot-stack img { border: 1px solid var(--rule); }
+.mindmap-scroll { max-height: 640px; overflow: auto; border: 1px solid var(--rule); border-radius: 8px; background: #FFFFFF; }
+.mindmap-scroll img { border-radius: 0; }
+.deck-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px 20px; }
+.deck-head h3 { margin-bottom: 2px; }
+.deck-nav { display: flex; align-items: center; gap: 10px; }
+.deck-nav .mono { font-size: 14px; color: var(--ink-2); min-width: 4.5em; text-align: center; }
+.deck-stage { background: #111418; border-radius: 8px; overflow: hidden; aspect-ratio: 1376 / 768; max-width: 100%; }
+.deck-stage img { width: 100%; height: 100%; object-fit: contain; display: block; border-radius: 0; }
+.deck-thumbs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.deck-thumbs button { flex: 0 0 auto; width: 104px; padding: 0; border: 2px solid transparent; border-radius: 6px; background: none; cursor: pointer; line-height: 0; }
+.deck-thumbs button[aria-current="true"] { border-color: var(--stamp); }
+.deck-thumbs img { width: 100%; border-radius: 4px; display: block; }
+
+/* 被騙了怎麼辦 */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; counter-reset: s; }
+@media (max-width: 900px) { .steps { grid-template-columns: minmax(0, 1fr); } }
+.steps li { counter-increment: s; background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; gap: 6px; align-content: start; }
+.steps li::before { content: counter(s); font: 600 13px/1 var(--f-mono); color: var(--stamp); }
+.steps b { font: 900 18px/1.4 var(--f-display); }
+.steps span { font-size: 14.5px; color: var(--ink-2); }
+.hotline { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px 20px; }
+.hotline .num { font: 600 44px/1 var(--f-mono); color: var(--danger); }
+.hotline p { font-size: 15px; color: var(--ink-2); max-width: 52ch; }
+.code-box { display: inline-block; font: 600 15px/1.4 var(--f-mono); background: var(--bubble); border: 1px solid var(--rule); border-radius: 6px; padding: 1px 7px; color: var(--ink); }
+
+/* 來源 */
+.sources { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; font-size: 14px; color: var(--ink-2); }
+@media (max-width: 760px) { .sources { grid-template-columns: minmax(0, 1fr); } }
+.sources ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+.sources h3 { font: 700 15px/1.4 var(--f-body); color: var(--ink); margin-bottom: 8px; }
+.foot { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--ink-3); display: flex; flex-wrap: wrap; gap: 6px 20px; justify-content: space-between; }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#check"><span class="brand-seal" aria-hidden="true">詐</span>先別匯款</a>
+    <nav class="nav" aria-label="頁面導覽">
+      <a href="#check">檢驗訊息</a>
+      <a href="#quiz">十題測驗</a>
+      <a href="#data">九月數據</a>
+      <a href="#types">手法圖鑑</a>
+      <a href="#listen">聽懂它</a>
+      <a href="#help">被騙了怎麼辦</a>
+      <a href="#sources">資料來源</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro" aria-labelledby="h-intro">
+    <span class="eyebrow">165 打詐儀錶板 · 2026 年 10 月版</span>
+    <h1 id="h-intro">收到這種訊息，<br><em>先別匯款</em>。</h1>
+    <p class="lede">把可疑的簡訊、LINE、私訊貼進來，檢驗台會用螢光筆標出詐騙紅旗，告訴你它最像哪一種 165 列管的手法，以及現在該做什麼。</p>
+    <span class="privacy">● 分析全部在你的瀏覽器裡完成，訊息不會上傳到任何地方</span>
+  </section>
+
+  <section id="check" class="desk" aria-label="訊息檢驗台">
+    <div class="sheet">
+      <h2>訊息原文 <small>可直接修改或貼上你收到的訊息</small></h2>
+      <div class="samples" id="samples" role="group" aria-label="範例訊息"></div>
+      <div class="meta-row">
+        <label class="field" for="sender">寄件者／來電顯示（選填）
+          <input id="sender" type="text" placeholder="例如 111、0912345678、黑貓宅急便" autocomplete="off">
+        </label>
+        <label class="field" for="last3">你的手機末三碼
+          <input id="last3" type="text" inputmode="numeric" maxlength="3" placeholder="選填" autocomplete="off">
+        </label>
+      </div>
+      <label class="field" for="msg">訊息內容
+        <textarea id="msg" spellcheck="false"></textarea>
+      </label>
+      <p class="hint">範例訊息是依 165 公布的話術改寫，人名、帳號與網址都是虛構的。</p>
+    </div>
+
+    <div class="sheet report" aria-live="polite">
+      <h2>鑑定結果 <small id="sampleTag"></small></h2>
+      <div class="verdict">
+        <div class="stamp" id="stamp">待檢驗<small>STANDBY</small></div>
+        <div class="meter">
+          <div class="summary" id="summary">貼上訊息後會自動檢驗。</div>
+          <div class="meter-track" aria-hidden="true"><div class="meter-fill" id="meterFill"></div></div>
+          <div class="meter-legend" aria-hidden="true"><span>沒有紅旗</span><span>留意</span><span>可疑</span><span>高度疑似</span></div>
+        </div>
+      </div>
+      <div class="marked" id="marked"></div>
+      <div class="legend" aria-label="螢光筆顏色說明">
+        <span><i class="sw hl-lure"></i>好康誘惑</span>
+        <span><i class="sw hl-press"></i>施壓保密</span>
+        <span><i class="sw hl-fake"></i>冒充身分</span>
+        <span><i class="sw hl-off"></i>帶離平台</span>
+        <span><i class="sw hl-pay"></i>要你付錢</span>
+        <span><i class="sw hl-acct"></i>要你交出帳戶</span>
+      </div>
+      <div class="typeguess" id="typeguess" hidden></div>
+      <div class="findings" id="findings"></div>
+      <div id="urlBox" hidden>
+        <div class="group-label">網址檢查</div>
+        <div class="checks" id="urlChecks"></div>
+      </div>
+      <div id="govBox" hidden>
+        <div class="group-label">政府簡訊三重驗證（111 短碼）</div>
+        <div class="checks" id="govChecks"></div>
+      </div>
+      <div>
+        <div class="group-label">現在該做的事</div>
+        <ol class="actions" id="actions"></ol>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="copyBtn" type="button">複製一段提醒，傳給家人</button>
+        <span class="toast" id="toast" role="status"></span>
+      </div>
+      <textarea class="copy-fallback" id="copyFallback" hidden readonly aria-label="提醒文字，可手動複製"></textarea>
+    </div>
+  </section>
+
+  <section id="quiz" class="sec" aria-labelledby="h-quiz">
+    <div class="sec-head">
+      <span class="eyebrow">十題情境測驗</span>
+      <h2 id="h-quiz">你分得出來嗎？</h2>
+      <p>十則訊息裡有真有假。真的訊息不會叫你點連結、付錢或加 LINE，假的訊息通常至少踩中一面紅旗。每題作答後都可以丟進檢驗台看批改。</p>
+    </div>
+    <div class="quiz">
+      <div class="phone" id="phone">
+        <div class="phone-top"><span class="channel" id="qChannel"></span><span class="mono" id="qCount"></span></div>
+        <div class="sender" id="qSender"></div>
+        <div class="bubble" id="qText"></div>
+        <div class="ctx" id="qCtx"></div>
+        <div class="answer-row">
+          <button class="ans" id="ansScam" type="button">是詐騙</button>
+          <button class="ans" id="ansSafe" type="button">沒問題</button>
+        </div>
+        <div class="dots" id="dots" aria-hidden="true"></div>
+      </div>
+      <div class="explain" id="explain">
+        <div class="explain-idle">先判斷這則訊息是真是假，答案和破解重點會出現在這裡。</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="data" class="sec" aria-labelledby="h-data">
+    <div class="sec-head">
+      <span class="eyebrow">115 年 9 月 · 電信網路詐欺</span>
+      <h2 id="h-data">件數最多的，不是傷最重的</h2>
+      <p>165 打詐儀錶板公布的 9 月數據。假網拍最常見，但平均每件只損失約 9 萬元；牽涉「投資」的兩種手法，平均每件超過 110 萬元。</p>
+    </div>
+    <div class="tiles">
+      <div class="tile"><span class="k">9 月受理件數</span><span class="v">10,775<small>件</small></span><span class="d">比 8 月多 123 件（+1.2%）</span></div>
+      <div class="tile"><span class="k">9 月財產損失</span><span class="v">39.36<small>億元</small></span><span class="d">比 8 月少 1.72 億元（−4.2%）</span></div>
+      <div class="tile"><span class="k">平均每件損失</span><span class="v">36.5<small>萬元</small></span><span class="d">依官方件數與財損計算</span></div>
+    </div>
+    <div class="insight">
+      <div class="insight-head">
+        <h3>投資類詐騙只占 <mark>16.0%</mark> 的案件，卻造成 <mark>51.6%</mark> 的財損</h3>
+        <div class="chart-legend" aria-hidden="true">
+          <span><i class="sw" style="background:var(--stamp)"></i>與投資有關</span>
+          <span><i class="sw" style="background:var(--bar-muted)"></i>其他手法</span>
+        </div>
+      </div>
+      <div class="measure-tabs" role="group" aria-label="切換指標">
+        <button class="chip-btn" type="button" data-m="c1" aria-pressed="true">受理件數</button>
+        <button class="chip-btn" type="button" data-m="c2" aria-pressed="false">財損</button>
+        <button class="chip-btn" type="button" data-m="c3" aria-pressed="false">平均每件</button>
+      </div>
+      <div class="multiples" id="multiples" role="table" aria-label="115 年 9 月詐騙手法前 5 名"></div>
+      <p class="chart-note">資料：內政部警政署 165 打詐儀錶板，115 年 9 月詐騙手法前 5 名（網站更新日期 115-10-14）。平均每件損失與占比為本頁依官方數字自行計算。</p>
+    </div>
+  </section>
+
+  <section id="types" class="sec" aria-labelledby="h-types">
+    <div class="sec-head">
+      <span class="eyebrow">165 列管手法 · 九種最常見</span>
+      <h2 id="h-types">手法圖鑑</h2>
+      <p>每一種手法都有固定劇本。下面的話術摘自 165 打詐儀錶板「我被詐騙了嗎？」，最後一行是一句話的破解口訣。</p>
+    </div>
+    <div class="types" id="typeCards"></div>
+  </section>
+
+  <section id="listen" class="sec" aria-labelledby="h-listen">
+    <div class="sec-head">
+      <span class="eyebrow">Gemini Notebook（NotebookLM）產出</span>
+      <h2 id="h-listen">用聽的、用看的</h2>
+      <p>把同一份 165 官方資料交給 Gemini Notebook，做成說明影片、雙主持人 Podcast、資訊圖表、心智圖、互動式報告和一份上台用的簡報。適合轉給不愛讀長文的家人。除了 Podcast 之外，每一項都對照官方數字查核過，查到的錯誤直接寫在下面。</p>
+    </div>
+    <div class="media-grid">
+      <div class="media-stack">
+        <div class="media">
+          <h3>說明影片：先別匯款：防詐說明影片（修正版）</h3>
+          <p class="src">影片摘要 · 說明影片格式 · 白板風格 · 7 分 41 秒</p>
+          <video id="mVideo" controls preload="metadata" playsinline poster="media/video-poster-v2.jpg" src="media/video-overview-v2.mp4" hidden></video>
+          <div class="pending" data-for="mVideo">影片檔 media/video-overview-v2.mp4 沒有載入。</div>
+          <p class="factcheck"><b>查核紀錄</b>：第一版影片把 9 月財損畫成「35 億」，官方數字是 39 億 3,572.3 萬元。當時額度用完，先加上更正字卡；額度重設後，用寫明「必須寫成 39.36 億」的提示詞重新生成，這一版的 39.36 億、10,775 件、9.1 萬與 120.5 萬都正確。剩下的小瑕疵：圓餅圖旁的說明文字把 Markdown 的「**」符號直接顯示出來。</p>
+        </div>
+        <div class="media">
+          <h3>Podcast：破解三大詐騙劇本</h3>
+          <p class="src">語音摘要 · 深入探索格式 · 兩位 AI 主持人對談 · 23 分 01 秒</p>
+          <audio id="mAudio" controls preload="metadata" src="media/podcast.mp3" hidden></audio>
+          <div class="pending" data-for="mAudio">音訊檔 media/podcast.mp3 沒有載入。</div>
+          <p class="how">提示詞要求主持人演三個情境：二手社團的假買家要你「簽署金流」、假檢警叫你加 LINE 做筆錄、熟人換號碼借錢。</p>
+        </div>
+      </div>
+      <div class="media">
+        <h3>資訊圖表：詐騙訊息的七面紅旗</h3>
+        <p class="src">資訊圖表 · 直向 · 手繪筆記風格 · 點圖可看原尺寸</p>
+        <a id="mInfoLink" href="media/infographic.jpg" target="_blank" rel="noopener" hidden><img id="mInfo" src="media/infographic.jpg" alt="NotebookLM 產生的資訊圖表：先別匯款，詐騙訊息的 7 面紅旗，含 16% 案件造成 51.6% 財損、停看查三步驟、111 簡訊三重驗證與 165 專線" loading="lazy"></a>
+        <div class="pending" data-for="mInfo">圖檔 media/infographic.jpg 沒有載入。</div>
+      </div>
+    </div>
+    <div class="media-grid">
+      <div class="media">
+        <h3>互動式報告：《先別匯款：防詐學習總覽》</h3>
+        <p class="src">報告 · 互動式學習總覽 · 5 章 · 內嵌 Podcast、資訊圖表與心智圖</p>
+        <div class="shot-stack">
+          <img src="media/report-1.jpg" alt="互動式報告開頭：課程導覽與數據透視，列出 115 年 9 月受理 10,775 件、財損 39 億 3,572.3 萬元" loading="lazy">
+          <img src="media/report-2.jpg" alt="互動式報告第 3 章：七面紅旗與九大手法破解口訣" loading="lazy">
+        </div>
+        <p class="factcheck"><b>查核紀錄</b>：報告裡的 10,775 件、39 億 3,572.3 萬元、平均每件 9.1 萬與 120.5 萬、16.0%／51.6% 都與 165 官方數字一致。產生時特別指示它不要內嵌數字有誤的舊版影片。唯一瑕疵是一句話混入了英文「legal」。</p>
+      </div>
+      <div class="media">
+        <h3>心智圖：防詐指針</h3>
+        <p class="src">心智圖 · 全部展開後匯出 · 往下捲動看完整結構</p>
+        <div class="mindmap-scroll" tabindex="0" aria-label="心智圖，可捲動">
+          <a href="media/mindmap.jpg" target="_blank" rel="noopener"><img src="media/mindmap.jpg" alt="心智圖：以收到可疑訊息為中心，分成七大紅旗特徵與對應手法、九種常見手法與破解口訣、官方查證管道、被騙後的六個應變步驟" loading="lazy"></a>
+        </div>
+      </div>
+    </div>
+    <div class="media deck" id="deck">
+      <div class="deck-head">
+        <div>
+          <h3>簡報投影片：大學生防詐實戰指南</h3>
+          <p class="src">簡報 · 簡報投影片格式 · 10 頁 · 可用左右鍵翻頁</p>
+        </div>
+        <div class="deck-nav">
+          <button class="chip-btn" type="button" id="deckPrev" aria-label="上一頁">上一頁</button>
+          <span class="mono" id="deckCount" aria-live="polite">1 / 10</span>
+          <button class="chip-btn" type="button" id="deckNext" aria-label="下一頁">下一頁</button>
+        </div>
+      </div>
+      <div class="deck-stage"><img id="deckImg" src="media/slides/slide-01.jpg" alt="簡報第 1 頁"></div>
+      <div class="deck-thumbs" id="deckThumbs" role="group" aria-label="簡報縮圖"></div>
+      <p class="factcheck"><b>查核紀錄</b>：10 頁的數字都和官方一致（39 億 3,572.3 萬元、16.0%／51.6%、**21* 與 ##21#）。最後一頁原本有一個寫著「掃描進入 165 打詐儀錶板」的 QR Code，用 OpenCV 檢查後發現它只是 AI 畫出來的圖案，偵測得到定位點卻無法解碼。防詐簡報放一個掃不出來、號稱官方的 QR Code 並不妥當，所以改放一個真的、連到 https://165dashboard.tw/ 的 QR Code，並在畫面上標註為後製替換。替換後已解碼驗證。</p>
+    </div>
+    <p class="how">Gemini Notebook 的三份來源文件：165 詐騙手法與話術彙編、115 年 9 月統計與最新案例、官方查證管道與自保守則。每項產出的自訂提示詞都記錄在〈歷程說明〉裡。筆記本原件：<a href="https://notebook.google.com/notebook/c09bd2f0-ade7-4a5a-a4e0-4fcab600d092" target="_blank" rel="noopener">Gemini Notebook「台灣常見詐騙手法與防範話術彙編」</a>。</p>
+  </section>
+
+  <section id="help" class="sec" aria-labelledby="h-help">
+    <div class="sec-head">
+      <span class="eyebrow">萬一已經匯款或給出資料</span>
+      <h2 id="h-help">被騙了怎麼辦</h2>
+      <p>越早通報，攔下款項的機會越大。依 165 打詐儀錶板，115 年 8 月一個月就攔阻了 8 億 2,702.3 萬元的詐騙款項。</p>
+    </div>
+    <div class="hotline">
+      <span class="num">165</span>
+      <p>反詐騙諮詢專線，免付費。也可以加 165 官方 LINE 詢問。要報案請撥 110 或到最近的派出所。</p>
+    </div>
+    <ol class="steps">
+      <li><b>立刻停止聯絡</b><span>不要再匯任何一筆「解凍金」「手續費」「保證金」。對方說錢會退回，是為了讓你繼續付。</span></li>
+      <li><b>打給 165 或 110</b><span>說明對方帳號、匯款時間與金額。到派出所報案時帶著手機。</span></li>
+      <li><b>打給你的銀行</b><span>用卡片背面的客服電話，通報被騙、申請止付、掛失卡片、改網銀密碼。</span></li>
+      <li><b>保留證據</b><span>對話截圖、對方 LINE ID 與帳號、匯款收據、網址都留著，不要刪除對話。</span></li>
+      <li><b>檢查電話轉接</b><span>被要求撥過 <span class="code-box">**21*</span> 的話，撥 <span class="code-box">##21#</span> 取消無條件轉接，再打給電信業者確認。</span></li>
+      <li><b>交出卡片要掛失</b><span>寄出過提款卡、存摺或 SIM 卡，立刻掛失並報案，避免帳戶被當成人頭帳戶。</span></li>
+    </ol>
+  </section>
+
+  <section id="sources" class="sec" aria-labelledby="h-src">
+    <div class="sec-head">
+      <span class="eyebrow">查核依據</span>
+      <h2 id="h-src">資料來源與限制</h2>
+    </div>
+    <div class="sources">
+      <div>
+        <h3>官方資料（擷取於 2026-10-14）</h3>
+        <ul>
+          <li><a href="https://165dashboard.tw/" target="_blank" rel="noopener">內政部警政署 165 打詐儀錶板</a>：115 年 9 月統計、最新案例</li>
+          <li><a href="https://165dashboard.tw/fraud-method" target="_blank" rel="noopener">165 打詐儀錶板「我被詐騙了嗎？」</a>：各類手法話術</li>
+          <li><a href="https://165.npa.gov.tw/" target="_blank" rel="noopener">165 全民防騙網</a>：涉詐資訊公告、常見問答</li>
+          <li><a href="https://moda.gov.tw/press/press-releases/16458" target="_blank" rel="noopener">數位發展部：111 簡訊新增手機末三碼與機關具名</a>（2025-06-17）</li>
+        </ul>
+      </div>
+      <div>
+        <h3>這個工具的限制</h3>
+        <ul>
+          <li>檢驗台用關鍵字規則比對 165 公布的話術，不是 AI 判讀。詐團換一套說法就可能漏掉，所以「沒有紅旗」不代表安全。</li>
+          <li>111 簡訊的實際排版以發送機關為準，範例中的末三碼格式為示意。</li>
+          <li>範例與測驗訊息是改寫的虛構內容，網址與帳號皆不存在，請勿嘗試連線。</li>
+          <li>真正要判斷時，請撥 165 查證。</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>先別匯款 · 資料截至 115-10-14</span>
+    <span>製作過程見<a id="processLink" href="https://claude.ai/artifact/EsP8V5GsNB6AK7BqYJ7Mh4" target="_blank" rel="noopener">〈歷程說明〉</a></span>
+  </footer>
+</main>
+
+<script id="engine">
+/* ===== 規則引擎：純函式，不碰 DOM，方便單獨測試 ===== */
+const CATS = {
+  lure:  { name: '好康誘惑', cls: 'hl-lure' },
+  press: { name: '施壓保密', cls: 'hl-press' },
+  fake:  { name: '冒充身分', cls: 'hl-fake' },
+  off:   { name: '帶離平台', cls: 'hl-off' },
+  pay:   { name: '要你付錢', cls: 'hl-pay' },
+  acct:  { name: '要你交出帳戶', cls: 'hl-acct' },
+};
+const CAT_ORDER = ['fake', 'press', 'lure', 'off', 'pay', 'acct'];
+
+// neg: true 代表前面若有「請勿、不要…」等否定詞，就視為正常提醒而不計分
+const RULES = [
+  { c: 'lure', w: 3, re: /穩賺不賠|保證(?:獲利|賺錢|收益|報酬|回本)|零風險|無風險|穩定獲利|每[日天月週]穩定/g, why: '保證獲利、零風險是假投資的招牌話術，正規投資不會保證報酬。' },
+  { c: 'lure', w: 3, re: /飆股|內線(?:消息)?|主力(?:已)?(?:進場|布局|佈局)|跟單|帶單|老師(?:帶|報|推薦)|必中籤|抽籤(?:系統)?漏洞|量化(?:機器人|交易)|AI\s*(?:投資|量化)/gi, why: '內線、帶單、AI 機器人是 165 列出的假投資話術。' },
+  { c: 'lure', w: 2, re: /(?:日|月|週|年)?(?:報酬|獲利|收益)(?:率)?\s*\d+(?:\.\d+)?\s*[%％倍]|\d+(?:\.\d+)?\s*[%％]\s*(?:報酬|獲利|收益)|翻倍|財富自由/g, why: '用具體的高報酬數字吸引你。' },
+  { c: 'lure', w: 2, re: /恭喜(?:您|你)?(?:已)?(?:中獎|獲得|抽中)|中獎|抽中|(?:獎金|禮金)(?:待|可)?領取/g, why: '沒參加卻中獎，是假中獎詐騙的開場。' },
+  { c: 'lure', w: 2, re: /免費(?:送|贈送|領取?|索取)|送給有緣人|只要付運費|只需(?:支付)?運費/g, why: '免費送是誘餌，接著會要你付運費或做「實名認證」。' },
+  { c: 'lure', w: 2, re: /免費\S{0,4}?(?:秘笈|課程|講座|健檢|診斷|書籍)|股票健檢|持股診斷/g, why: '免費秘笈、股票健檢是假投資拉人進群的第一步。' },
+  { c: 'lure', w: 2, re: /不看聯徵|免聯徵|當日撥款|保證過件|絕對過件|超低利率|免保人|免擔保/g, why: '超低利率、絕對過件是 165 列出的假貸款話術。' },
+  { c: 'lure', w: 2, re: /日領|高薪|輕鬆(?:賺|月入|入帳)|在家(?:工作|兼職|賺)|家庭代工|打字員|免經驗/g, why: '高薪輕鬆的工作，常是要你交出帳戶的假求職。' },
+  { c: 'lure', w: 2, re: /(?:退稅|補助|紓困|普發|津貼)(?:金|款)?(?:尚未|待|可|已)?(?:領取|入帳|發放|撥款)/g, why: '政府發錢不會要你點簡訊連結輸入帳戶。' },
+  { c: 'lure', w: 2, re: /泰達幣|USDT|虛擬貨幣|加密貨幣|比特幣|礦機|算力機/gi, why: '虛擬貨幣轉出後幾乎追不回來，是詐團最愛的金流。' },
+
+  { c: 'press', w: 1, re: /立即|立刻|馬上|盡快|儘速|即刻|趕快|趕緊/g, why: '催你立刻行動，讓你沒時間想。' },
+  { c: 'press', w: 1, re: /\d+\s*(?:小時|分鐘)內|今[日天]內|限時|逾期|否則|最後期限|即將(?:失效|到期|停用|退回)/g, why: '設下期限製造壓力。' },
+  { c: 'press', w: 2, re: /凍結|停用|停權|鎖定|註銷|停話|暫停(?:服務|使用|交易)|無法(?:使用|提領|出金|出貨)|被鎖/g, why: '用凍結、停用嚇你，逼你照做。' },
+  { c: 'press', w: 2, re: /涉嫌|涉及.{0,6}案|涉案|洗錢|販毒|拘票|拘提|通緝|傳票|起訴|刑事責任|強制執行|扣押|移送/g, why: '用「你涉案了」嚇你，是假檢警的起手式。' },
+  { c: 'press', w: 3, re: /偵查不公開|(?:不得|不要|不能|請勿|勿|先別|別)(?:向|跟|和)?(?:告訴|告知|透露|讓)(?:任何人|家人|親友|別人|他人|銀行|行員)|(?:先)?(?:不要|別|不能)(?:跟|和|讓)(?:媽|爸|家人|老公|老婆|別人|任何人|行員|銀行)(?:說|講|知道)?|保密條款|監聽中|洩密/g, why: '叫你對家人、銀行保密，是 165 點名的假檢警與假投資關鍵話術。' },
+  { c: 'press', w: 1, re: /名額有限|只剩\s*\d+|最後\s*\d+\s*(?:名|個|組|位|天)|早鳥(?:優惠)?只到|很多人(?:在)?(?:問|搶|排)/g, why: '製造搶手假象，逼你先付款。' },
+
+  { c: 'fake', w: 2, re: /檢察官|地檢署|法院|法官|書記官|警察|警官|員警|刑警|偵查隊|刑事局|調查局|派出所/g, why: '冒充檢警。真正的檢警、法院不會用 LINE 辦案或要你交錢。' },
+  { c: 'fake', w: 3, severe: true, re: /(?:視訊|線上|LINE)\s*(?:做|製作)?筆錄|監管帳戶|(?:資金|財產|存款)(?:監管|保管|清查)|集中保管/gi, why: '線上筆錄、監管帳戶是假檢警才有的說法。' },
+  { c: 'fake', w: 1, re: /健保署|國稅局|財政部|監理(?:站|所)|戶政事務所|衛福部|金管會|勞保局|數位發展部|地政|公路局/g, why: '自稱政府機關。政府簡訊應由 111 發送，網址結尾是 gov.tw。', gov: true },
+  { c: 'fake', w: 1, re: /客服(?:專員|人員|中心)?|專員|經理|助理|分析師/g, why: '「客服、專員、經理」是詐團分工劇本裡的固定角色。' },
+  { c: 'fake', w: 1, re: /賣貨便|好賣\+?|交貨便|店到店|黑貓|宅急便|物流|快遞|包裹|蝦皮|超商取貨/g, why: '物流與購物平台是最常被冒用的名義。' },
+  { c: 'fake', w: 2, re: /猜猜(?:我是)?誰|我是誰|換(?:了)?(?:新)?(?:號碼|電話|手機|門號)|手機(?:壞|掉|丟)了|新的?(?:LINE|帳號)|重新加(?:我)?(?:LINE|賴)|(?:LINE|帳號)被盜/gi, why: '「換號碼、帳號被盜」是猜猜我是誰與盜用 LINE 借錢的開場。' },
+
+  { c: 'off', w: 2, neg: true, re: /加\S{0,6}?\s*(?:LINE|Line|line|賴)(?:好友)?|(?:LINE|賴)\s*(?:ID|id)|ID\s*[:：]\s*@?[a-z0-9_.\-]{3,}|line\.me\/\S+|lin\.ee\/\S+/g, why: '要你加 LINE，把你帶離有交易保障的平台。' },
+  { c: 'off', w: 2, neg: true, re: /私下(?:交易|匯款|聯繫|聯絡)|脫離平台|不要透過平台|另外(?:聯繫|聯絡)|私訊(?:我|小編)/g, why: '私下交易就沒有平台保障。' },
+  { c: 'off', w: 2, neg: true, re: /(?:加入|進入)(?:我們的)?(?:VIP|投資|股票|飆股|學員|專屬)?(?:群組|社群|群)/g, why: '拉你進群組，用假學員營造氣氛。' },
+  { c: 'off', w: 2, neg: true, re: /(?:下載|安裝)(?:這個|指定的?|專屬)?\S{0,6}?(?:APP|App|app|軟體|程式)/g, why: '叫你下載指定 APP，可能是假投資平台或遠端控制程式。' },
+
+  { c: 'pay', w: 2, neg: true, re: /匯款|轉帳|轉入|匯入|匯到|轉到|臨櫃|無摺存款|ATM|提款機/gi, why: '要你匯款、轉帳或操作 ATM。' },
+  { c: 'pay', w: 3, neg: true, re: /保證金|解凍(?:金|費)|認證(?:費|金)|審核費|工本費|自證金|擔保金|風險(?:認證)?金|出場費|見面費|核實金/g, why: '「先付一筆才能拿到錢或見到人」是詐騙最穩定的特徵。' },
+  { c: 'pay', w: 1, neg: true, re: /手續費|稅金|運費|訂金|規費|服務費|押金/g, why: '先付費用本身不一定是詐騙，但要確認收款的是不是官方。' },
+  { c: 'pay', w: 3, neg: true, re: /遊戲點數|點數卡|買\s*\d*\s*(?:元|塊)?的?點數|點數.{0,4}序號|拍(?:下)?序號|GASH|MyCard|禮品卡|Gift\s*Card/gi, why: '點數序號一傳出去就等於現金，幾乎追不回。' },
+  { c: 'pay', w: 2, neg: true, re: /儲值|入金|出金|提領獲利/g, why: '儲值、出金是假投資平台的用語。' },
+  { c: 'pay', w: 2, neg: true, re: /面交|專人(?:收取|到府|前往)|派(?:人|專員)(?:收|取)/g, why: '派專人面交收錢，是假投資與假檢警的收款方式。' },
+  { c: 'pay', w: 3, severe: true, re: /(?:解除|取消)(?:分期|重複扣款|批發商|會員升級|錯誤設定)|誤設|重複扣款|批發商/g, why: '「解除分期」是經典詐騙。ATM 和網銀沒有這種功能。' },
+  { c: 'pay', w: 2, neg: true, re: /借(?:我|你)?\s*\d*\s*(?:萬|千|塊|元)?(?:周轉|週轉)?|周轉|週轉|急用/g, why: '開口借錢，一定要用原本的電話跟本人確認。' },
+
+  { c: 'acct', w: 2, neg: true, re: /驗證碼|認證碼|OTP|簡訊碼|一次性密碼|動態密碼/gi, why: '驗證碼等於你帳戶的鑰匙，任何人都不該跟你要。' },
+  { c: 'acct', w: 2, neg: true, re: /網路銀行|網銀|行動銀行/g, why: '要你打開網銀操作，錢就會被你親手轉走。' },
+  { c: 'acct', w: 2, neg: true, re: /帳號密碼|帳密|密碼/g, why: '密碼不能給任何人，包括自稱客服或檢警的人。' },
+  { c: 'acct', w: 3, neg: true, re: /信用卡(?:卡號|號碼|資料|背面)|卡號|有效期限|背面(?:末)?三碼|安全碼|CVV/gi, why: '卡號加背面三碼就能盜刷。' },
+  { c: 'acct', w: 3, neg: true, severe: true, re: /(?:寄|交付|交給|放到|放在|放置)\S{0,8}?(?:提款卡|金融卡|存摺|存簿|SIM\s*卡)/gi, why: '交出提款卡或存摺，你的帳戶會變成詐團的人頭帳戶。' },
+  { c: 'acct', w: 3, neg: true, re: /實名(?:制)?(?:認證|驗證)|身分(?:驗證|認證)|簽署|金流(?:服務|協議|保障|認證)?|誠信認證|三方認證|保障協議|開通(?:金流|收款|外幣)/g, why: '「實名認證、簽署金流」是假網拍與假買家的固定台詞。' },
+  { c: 'acct', w: 1, neg: true, re: /身分證(?:字號|正反面)?|出生年月日/g, why: '索取個資。' },
+  { c: 'acct', w: 3, neg: true, severe: true, re: /分享(?:手機|螢幕|畫面)|螢幕分享|遠端(?:操作|控制)|AnyDesk|TeamViewer|無卡提款/gi, why: '分享畫面或開通無卡提款，等於把網銀交給對方。' },
+  { c: 'acct', w: 3, severe: true, re: /\*\*21\*|＊＊21＊/g, why: '撥 **21* 會把你的電話無條件轉接給對方，銀行的確認電話也會被轉走。' },
+  { c: 'acct', w: 2, neg: true, re: /(?:交易明細|明細)(?:拍|拍照|傳)|拍(?:照)?(?:交易)?明細/g, why: 'ATM 交易明細無法證明任何身分，這是見面詐財的話術。' },
+];
+
+const SAFE_RULES = [
+  { re: /請(?:自行)?(?:開啟|使用|登入|至|到)(?:官方)?\S{0,8}?(?:APP|App|app|官網|官方網站)(?:查|查看|查詢|確認)?/g, why: '叫你自己開官方 APP 或官網查詢，是正規單位的做法。' },
+  { re: /(?:可|請)?(?:於|至|到|在)\s*(?:官方)?\s*(?:APP|App|app)\S{0,10}?(?:查看|查詢|確認)/g, why: '叫你自己進 App 查詢，而不是點訊息裡的連結，是正常做法。' },
+  { re: /(?:撥打|致電)(?:信用)?卡(?:片)?背面(?:的)?客服/g, why: '要你打卡片背面的電話，而不是訊息裡的號碼，是正確做法。' },
+  { re: /本(?:信件|簡訊|訊息)(?:無|不含|沒有)(?:任何)?(?:連結|附件)/g, why: '主動說明沒有連結，降低釣魚風險。' },
+];
+const NEG_BEFORE = /(?:請勿|切勿|不要|不會|絕不|勿|不得|請不要|千萬別|禁止|不需要?|無需|無須|從不)[^，。！？!?,\n]{0,14}$/;
+
+const SHORTENERS = ['bit.ly','reurl.cc','tinyurl.com','t.co','goo.gl','is.gd','ppt.cc','lihi.cc','lihi1.cc','lihi2.cc','lihi1.com','lihi.io','pse.is','s.id','cutt.ly','rebrand.ly','shorturl.at','t.ly','bit.do','ow.ly','rb.gy','tiny.cc','0rz.tw','risu.io','supr.link','reurl.tw'];
+const RISKY_TLD_HI = ['top','xyz','icu','cyou','sbs','tk','ml','ga','cf','gq','buzz','vip','cc','click','win','bid','loan','rest','bond'];
+const RISKY_TLD_LO = ['shop','online','site','store','club','live','fun','life','work','today','asia','pro','info','link'];
+const SLD2 = ['com.tw','gov.tw','org.tw','edu.tw','net.tw','idv.tw','game.tw','ebiz.tw','club.tw','mil.tw','com.hk','com.cn','co.jp','co.uk','com.sg','com.my'];
+const BRANDS = [
+  { re: /(^|[.\-])(7-?11|seven|ibon|myship)([.\-]|$)/, official: ['7-11.com.tw','ibon.com.tw'], name: '7-ELEVEN／賣貨便' },
+  { re: /(^|[.\-])(fami|family|famiport)/, official: ['family.com.tw'], name: '全家' },
+  { re: /(^|[.\-])(shopee|shoppe|shope|shpee)/, official: ['shopee.tw','shopee.com'], name: '蝦皮' },
+  { re: /(^|[.\-])(t-?cat|tcat|blackcat|kuroneko)/, official: ['t-cat.com.tw'], name: '黑貓宅急便' },
+  { re: /(^|[.\-])hct([.\-]|$)/, official: ['hct.com.tw'], name: '新竹物流' },
+  { re: /(^|[.\-])(post|chunghwapost)([.\-]|$)/, official: ['post.gov.tw'], name: '中華郵政' },
+  { re: /(^|[.\-])(gov|mvdis|thb|motc|mof|nhi|etax|moi|npa|moda)([.\-]|\d|$)/, official: ['*.gov.tw'], name: '政府機關' },
+  { re: /(^|[.\-])(line|lin)([.\-]|$)/, official: ['line.me','lin.ee','line.biz','linecorp.com'], name: 'LINE' },
+  { re: /(^|[.\-])(apple|icloud)/, official: ['apple.com','icloud.com'], name: 'Apple' },
+  { re: /(^|[.\-])momo/, official: ['momoshop.com.tw','momo.dm'], name: 'momo' },
+  { re: /(^|[.\-])pchome/, official: ['pchome.com.tw'], name: 'PChome' },
+  { re: /(^|[.\-])(netflix|netf1ix)/, official: ['netflix.com'], name: 'Netflix' },
+];
+const TLDS = 'com|net|org|tw|top|xyz|icu|vip|cc|shop|buzz|info|link|site|online|club|me|ly|io|co|app|cn|hk|jp|live|store|tk|ml|ga|cf|gq|work|fun|life|asia|cyou|sbs|click|win|bid|loan|today|pro|biz|us|uk|gd|at|ee|id|rest|bond';
+const URL_RE = new RegExp('(?:https?:\\/\\/[^\\s，。！？、」』）)<>"\'\\u3000]+)|(?:\\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+(?:' + TLDS + ')\\b(?::\\d+)?(?:\\/[^\\s，。！？、」』）)<>"\'\\u3000]*)?)', 'gi');
+
+function registrable(host) {
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) return host;
+  const p = host.split('.');
+  const last2 = p.slice(-2).join('.');
+  return SLD2.includes(last2) ? p.slice(-3).join('.') : last2;
+}
+function findUrls(text) {
+  const out = [];
+  URL_RE.lastIndex = 0;
+  let m;
+  while ((m = URL_RE.exec(text))) {
+    let raw = m[0].replace(/[.,;:!?'"]+$/, '');
+    if (!raw.includes('.')) continue;
+    out.push({ raw, start: m.index, end: m.index + raw.length });
+  }
+  return out;
+}
+function analyzeUrl(raw, ctx) {
+  const scheme = (raw.match(/^(https?):\/\//i) || [])[1];
+  const host = raw.replace(/^https?:\/\//i, '').split(/[\/?#:]/)[0].toLowerCase();
+  const reg = registrable(host);
+  const tld = host.split('.').pop();
+  const flags = [];
+  let pts = 0;
+  const isGov = host.endsWith('.gov.tw');
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) { flags.push({ lv: 'bad', t: '網址是一串數字（IP 位址），正規服務不會這樣給你連結。' }); pts += 3; }
+  if (host.includes('xn--')) { flags.push({ lv: 'bad', t: '網址用了 xn-- 開頭的國際化網域，常用來偽裝成相似的字。' }); pts += 3; }
+  if (SHORTENERS.includes(reg) || SHORTENERS.includes(host)) { flags.push({ lv: 'bad', t: '縮網址，看不出真正會連到哪裡。' }); pts += 2; }
+  if (reg === 'lin.ee' || reg === 'line.me') { flags.push({ lv: 'meh', t: 'LINE 加好友連結，會把對話帶離原平台。' }); }
+  if (RISKY_TLD_HI.includes(tld)) { flags.push({ lv: 'bad', t: '網域結尾 .' + tld + ' 費用低廉，常被詐團大量註冊。' }); pts += 2; }
+  else if (RISKY_TLD_LO.includes(tld) && !isGov) { flags.push({ lv: 'meh', t: '網域結尾 .' + tld + ' 不一定是詐騙，但要確認是不是品牌官網。' }); pts += 1; }
+  for (const b of BRANDS) {
+    if (!b.re.test(host)) continue;
+    const ok = b.official.some(o => o === '*.gov.tw' ? isGov : (reg === o || host === o));
+    if (!ok) { flags.push({ lv: 'bad', t: '網址裡有「' + b.name + '」的字樣，但真正的網域是 ' + reg + '，不是官方網站。' }); pts += 3; }
+    break;
+  }
+  if (ctx.claimsGov && !isGov) { flags.push({ lv: 'bad', t: '訊息自稱政府機關，網址卻不是 gov.tw 結尾。' }); pts += 3; }
+  if (scheme && scheme.toLowerCase() === 'http') { flags.push({ lv: 'meh', t: '用 http 而不是 https，連線沒有加密。' }); pts += 1; }
+  if (isGov) flags.push({ lv: 'ok', t: '網域是 gov.tw，屬於政府網域。仍要確認寄件者是 111。' });
+  if (!flags.length) flags.push({ lv: 'meh', t: '沒看出網址本身的異狀，但不要從訊息點進去，自己開官方 APP 查比較保險。' });
+  return { raw, host, reg, flags, pts, isGov };
+}
+
+const TYPES = [
+  { id: 'gov', name: '假冒機構（公務員）詐騙', alias: '俗稱假檢警', re: /檢察官|地檢署|法院|警察|警官|刑警|偵查|筆錄|洗錢|拘票|通緝|監管|扣押|涉案|涉嫌|身分(?:證)?遭?冒用|健保卡/g, tip: '檢警、法院不會用 LINE 辦案，不會要你監管帳戶、交出存款或提款卡。' },
+  { id: 'install', name: '解除分期付款詐騙', re: /分期|重複扣款|誤設|批發商|升級(?:為)?會員|解除/g, tip: 'ATM 和網銀沒有「解除分期」功能，叫你去操作的就是詐騙。' },
+  { id: 'invest', name: '假投資詐騙', re: /投資|股票|飆股|老師|帶單|跟單|當沖|穩賺|獲利|報酬|虛擬貨幣|USDT|泰達幣|出金|入金|VIP|主力|內線|抽籤|ETF|量化|操盤/gi, tip: '網友不會幫你賺錢；出金要先付錢，一定是詐騙。' },
+  { id: 'shop', name: '假網拍／假買家騙賣家', re: /賣貨便|好賣|交貨便|店到店|黑貓|宅急便|實名|簽署|金流|下單|訂單|賣場|買家|賣家|一頁式|貨到付款|保留商品/g, tip: '物流和購物平台不會叫你匯款或開網銀做實名認證。' },
+  { id: 'date', name: '假交友／見面詐財', re: /見面|經理|約會|網友|寶貝|親愛的|直播主|出場費|見面費|不是警察|點數/g, tip: '見面前要付錢、買點數、證明你不是警察，都是詐騙。' },
+  { id: 'guess', name: '猜猜我是誰／盜用 LINE 借錢', re: /猜猜|我是誰|換(?:了)?(?:新)?(?:號碼|電話|手機)|手機(?:壞|掉)了|新的?(?:LINE|帳號)|被盜|借(?:我)?|周轉|週轉|急用|還你/gi, tip: '用你通訊錄裡原本存的電話打給本人確認。' },
+  { id: 'job', name: '假求職（人頭帳戶）', re: /家庭代工|在家工作|兼職|日領|高薪|打字員|徵才|應徵|薪資|提款卡|金融卡|存摺|代收|節稅/g, tip: '交出提款卡或幫人收款轉帳，你會變成人頭帳戶而觸法。' },
+  { id: 'loan', name: '假借銀行貸款詐騙', re: /貸款|借貸|聯徵|撥款|過件|利率|額度|債務整合|信貸/g, tip: '正規貸款不會要你先付手續費、律師費，也不會要你寄出金融卡。' },
+  { id: 'prize', name: '假中獎／假補助', re: /中獎|抽中|獎金|禮金|補助|普發|津貼|免費(?:送|領)|有緣人/g, tip: '真的中獎或補助，不需要你先付錢或打開網銀。' },
+  { id: 'phish', name: '釣魚連結詐騙', re: /包裹|配送|地址|退回|帳戶異常|異常登入|身分驗證|退稅|停用|欠費|繳費|罰單|罰鍰|點擊|點選|更新資料/g, tip: '急著要你點連結輸入資料，就是釣魚；改從官方 APP 或官網查。', needsUrl: true },
+];
+
+function analyze(text, opts) {
+  opts = opts || {};
+  const hits = [];
+  const negs = [];
+  for (const [i, r] of RULES.entries()) {
+    r.re.lastIndex = 0;
+    let m;
+    while ((m = r.re.exec(text))) {
+      if (!m[0]) { r.re.lastIndex++; continue; }
+      const before = text.slice(Math.max(0, m.index - 20), m.index);
+      if (r.neg && NEG_BEFORE.test(before)) { negs.push({ start: m.index, end: m.index + m[0].length, s: m[0] }); continue; }
+      hits.push({ rule: i, c: r.c, w: r.w, start: m.index, end: m.index + m[0].length, s: m[0], gov: !!r.gov });
+    }
+  }
+  const safes = [];
+  for (const r of SAFE_RULES) {
+    r.re.lastIndex = 0;
+    let m;
+    while ((m = r.re.exec(text))) safes.push({ start: m.index, end: m.index + m[0].length, s: m[0], why: r.why });
+  }
+  if (negs.length) safes.push({ start: negs[0].start, end: negs[0].end, s: negs[0].s, why: '「請勿提供、不要點擊」這類句子是在提醒你，不算紅旗。', neg: true });
+
+  const claimsGov = hits.some(h => h.gov);
+  const urls = findUrls(text).map(u => Object.assign(u, analyzeUrl(u.raw, { claimsGov })));
+
+  // 111 政府簡訊三重驗證
+  let gov = null;
+  let govPts = 0;
+  const sender = (opts.sender || '').replace(/[\s\-()+]/g, '');
+  const last3 = (opts.last3 || '').replace(/\D/g, '');
+  const head = text.slice(0, 40);
+  if (sender === '111') {
+    const c1 = { lv: 'ok', t: '寄件號碼是 111（政府專屬短碼）。' };
+    let c2;
+    if (last3.length === 3) c2 = head.includes(last3) ? { lv: 'ok', t: '開頭有你的手機末三碼 ' + last3 + '。' } : { lv: 'bad', t: '開頭沒有你的手機末三碼 ' + last3 + '，可能是偽基地台發的罐頭簡訊。' };
+    else c2 = { lv: 'meh', t: '填入你的手機末三碼，才能比對簡訊開頭。' };
+    const agency = /[一-鿿]{2,}(?:部|署|局|處|府|所|院|會|中心|公所|監理站|國稅局|稅務局|學校|大學|台電|臺電|台水|臺水|中華郵政)/.exec(head);
+    const c3 = agency ? { lv: 'ok', t: '開頭有機關名稱「' + agency[0] + '」。' } : { lv: 'bad', t: '開頭沒有寫出發送機關名稱。' };
+    const checks = [c1, c2, c3];
+    const nonGovUrl = urls.find(u => !u.isGov);
+    if (nonGovUrl) checks.push({ lv: 'bad', t: '內含非 gov.tw 網址 ' + nonGovUrl.host + '，即使寄件者是 111 也不要點。' });
+    const bad = checks.filter(c => c.lv === 'bad').length;
+    gov = { checks, verified: !bad && c2.lv === 'ok' };
+    govPts = 2 * bad;
+  } else if (claimsGov) {
+    gov = { checks: [
+      { lv: sender ? 'bad' : 'meh', t: sender ? '自稱政府機關，寄件者卻是「' + opts.sender + '」而不是 111。' : '自稱政府機關。政府簡訊會由 111 發送，請看寄件號碼。' },
+    ] };
+    if (sender) govPts = 2;
+  }
+  // 通過 111 三重驗證時，機關名稱本身不算冒充
+  const scored = gov && gov.verified ? hits.filter(h => !h.gov) : hits;
+
+  // 每類取最高分，加上不同規則的額外命中
+  const cats = {};
+  for (const h of scored) {
+    const k = h.c;
+    cats[k] = cats[k] || { max: 0, rules: new Set(), hits: [] };
+    cats[k].max = Math.max(cats[k].max, h.w);
+    cats[k].rules.add(h.rule);
+    cats[k].hits.push(h);
+  }
+  let pts = govPts;
+  for (const k in cats) pts += cats[k].max + Math.min(cats[k].rules.size - 1, 2) * 0.5;
+  for (const u of urls) pts += u.pts;
+
+  const combos = [];
+  const has = k => !!cats[k];
+  if (has('fake') && (has('pay') || has('acct'))) { pts += 3; combos.push('冒充身分，又要你付錢或交出帳戶'); }
+  if (has('fake') && has('press') && has('off')) { pts += 3; combos.push('冒充權威、施加壓力，再把你帶去 LINE'); }
+  if (has('off') && (has('pay') || has('acct'))) { pts += 2; combos.push('先帶你離開平台，再要錢或要帳戶'); }
+  if (has('lure') && has('pay')) { pts += 2; combos.push('先給甜頭，再要你付錢'); }
+  if (has('lure') && has('off')) { pts += 2; combos.push('用好處把你拉去 LINE'); }
+  if (has('press') && (has('pay') || has('acct'))) { pts += 2; combos.push('一邊施壓，一邊要錢或要帳戶'); }
+  if (urls.length && (has('press') || has('acct'))) { pts += 2; combos.push('急著要你點連結'); }
+  if (gov && gov.verified) pts = Math.max(0, pts - 2);
+  const severe = scored.find(h => RULES[h.rule].severe);
+  if (severe) pts = Math.max(pts, 8);
+
+  const safeHits = safes.filter(s => !s.neg).length;
+  pts = Math.max(0, pts - Math.min(safeHits, 2));
+  if (pts > 0 && pts < 1) pts = 1;
+
+  // 最像哪一類
+  let best = null;
+  for (const t of TYPES) {
+    if (t.needsUrl && !urls.length) continue;
+    t.re.lastIndex = 0;
+    const found = new Set((text.match(t.re) || []).map(s => s.toLowerCase()));
+    const n = found.size;
+    if (n >= 2 && (!best || n > best.n)) best = { t, n };
+  }
+  if (!best && urls.length && Object.keys(cats).length) best = { t: TYPES.find(t => t.id === 'phish'), n: 1 };
+
+  const level = pts >= 8 ? 'high' : pts >= 4 ? 'mid' : pts >= 1 ? 'low' : 'none';
+  const score = Math.min(100, Math.round(pts / 12 * 100));
+
+  // 標記區段（去除重疊，保留先出現且較長的）
+  const spans = scored.map(h => ({ start: h.start, end: h.end, c: h.c, rule: h.rule }))
+    .concat(urls.map(u => ({ start: u.start, end: u.end, url: true, ok: u.isGov && !u.flags.some(f => f.lv === 'bad') })))
+    .concat(safes.map(s => ({ start: s.start, end: s.end, safe: true })));
+  spans.sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start));
+  const clean = [];
+  let edge = -1;
+  for (const s of spans) { if (s.start >= edge) { clean.push(s); edge = s.end; } }
+
+  return { cats, hits: scored, urls, combos, gov, safes, type: best && best.t, level, score, pts, spans: clean };
+}
+
+function buildActions(r) {
+  const a = [];
+  const has = k => !!r.cats[k];
+  if (r.urls.length) a.push('不要點這則訊息裡的連結。要查訂單、包裹或帳戶，自己打開官方 APP，或自己輸入官網網址。');
+  if (has('fake')) a.push('不要回撥訊息裡的電話、不要加對方給的 LINE。自己查官方電話打過去，或直接撥 165 問。');
+  if (has('pay')) a.push('一毛錢都不要匯，也不要買點數。對方說「之後會退還」，是為了讓你繼續付。');
+  if (has('acct')) a.push('驗證碼、密碼、卡號、提款卡都不能給任何人，也不要分享手機畫面或照指示操作網銀。');
+  if (has('off')) a.push('留在原本的平台交易與對話，不要被帶去 LINE 或「客服」那邊。');
+  if (r.type && r.type.id === 'guess') a.push('用你通訊錄裡原本存的號碼，打給本人確認。');
+  if (r.gov && r.gov.checks.some(c => c.lv === 'bad')) a.push('這則「政府簡訊」沒通過 111 三重驗證，當作詐騙處理。');
+  if (r.level === 'none') a.push('沒看到常見紅旗，但手法一直在變。只要對方開始要錢、要資料、要你加 LINE，就先停下來查證。');
+  a.push('還是不確定，就撥 165 反詐騙專線（免付費）或加 165 官方 LINE 詢問。');
+  return a;
+}
+
+const LEVELS = {
+  high: { label: '高度疑似詐騙', en: 'HIGH RISK', cls: 'lv-high', color: 'var(--danger)' },
+  mid:  { label: '相當可疑', en: 'SUSPICIOUS', cls: 'lv-mid', color: 'var(--warn)' },
+  low:  { label: '留意查證', en: 'CAUTION', cls: 'lv-low', color: 'var(--warn)' },
+  none: { label: '未見紅旗', en: 'NO FLAGS', cls: 'lv-none', color: 'var(--safe)' },
+};
+</script>
+
+<script>
+/* ===== 範例、測驗、圖鑑資料 ===== */
+const SAMPLES = [
+  { id: 'shop', label: '假網拍・實名認證', sender: 'Messenger 賣家', last3: '', text: '您好～這邊用賣貨便寄出喔，請點連結下單：https://myship-7-11.shop/order/88231\n如果系統顯示「未完成實名認證」，請加客服LINE ID：@ship-help7 處理，不然訂單會被凍結，款項要今天內完成喔！' },
+  { id: 'gov', label: '假檢警', sender: '+886-2-2311-xxxx', last3: '', text: '這裡是臺北地檢署。您的身分證遭冒用開設帳戶，已涉及洗錢案件，本署已核發拘票。偵查不公開，請勿告訴家人。請立即加入承辦檢察官 LINE：@tpe-case0921 製作視訊筆錄，並配合監管帳戶，將存款轉入指定帳戶保管。' },
+  { id: 'invest', label: '假投資群組', sender: 'LINE 群組「價值投資研究社」', last3: '', text: '老師今天帶單！內線消息，主力已進場布局，跟單穩賺不賠，上週學員獲利 35%。名額只剩 5 位，想加入 VIP 群組請加助理 LINE @stock-vip88，入金後由專員協助操作。' },
+  { id: 'phish', label: '包裹釣魚簡訊', sender: '0975xxx612', last3: '', text: '[黑貓宅急便] 您的包裹因地址不完整配送失敗，請於24小時內更新資料，逾期將退回寄件人：https://t-cat-tw.top/a7x' },
+  { id: 'guess', label: '猜猜我是誰', sender: '0938xxx207', last3: '', text: '是我啦，我換新號碼了，舊的手機壞了，記得改通訊錄。今天有點急事，可以先借我三萬周轉嗎？明天就還你，先不要跟媽說。' },
+  { id: 'install', label: '解除分期', sender: '來電 02-2xxx-xxxx', last3: '', text: '這裡是購物網站客服，您上次的訂單被誤設為批發商，每個月會重複扣款 12 期。等一下會有銀行專員打給您，請您到 ATM 依指示解除分期設定，否則今天就會扣款。' },
+  { id: 'real111', label: '真的 111 簡訊（示意）', sender: '111', last3: '482', text: '(手機末3碼482)臺北市政府環境保護局：您申請之大型廢棄物清運已排定10/18上午，請於8時前放置門口，免收費用。' },
+];
+
+const QUIZ = [
+  { ch: '簡訊', sender: '111', ctx: '你的手機末三碼是 731。', text: '(手機末3碼731)交通部公路局臺北區監理所：您的汽車定期檢驗期限為10/31，請於期限內至各監理站或代檢廠辦理。', scam: false, last3: '731',
+    why: '寄件者是 111，開頭有你的末三碼和機關名稱，三重驗證都通過。內容只提醒期限，沒有連結、沒要錢。', clue: '111 + 末三碼 + 機關名稱，三個都對才算數。' },
+  { ch: '簡訊', sender: '0912xxx358', ctx: '', text: '【監理站】您有一筆交通罰單逾期未繳，今日將移送強制執行，請立即繳納：https://mvdis-gov.cc/pay', scam: true,
+    why: '自稱監理站，寄件者卻是一般手機號碼而不是 111；網址是 .cc 結尾，不是 gov.tw。還用「強制執行」嚇你立刻付款。', clue: '政府簡訊看 111，政府網站看 gov.tw。' },
+  { ch: 'LINE', sender: '阿姨（新帳號）', ctx: '她說原本的 LINE 被盜了。', text: '我原本的LINE被盜了，這是新的。你方便幫我買兩張 3000 元的遊戲點數嗎？拍序號給我，晚上還你。', scam: true,
+    why: '「帳號被盜、換新 LINE」再開口要點數，是 165 列出的盜用 LINE 詐騙。點數序號一傳出去就追不回來。', clue: '熟人借錢或要點數，用原本的電話打給本人確認。' },
+  { ch: 'App 推播', sender: '購物平台 App', ctx: '你昨天在這個平台下過單。', text: '您的訂單 #2410 已出貨，預計 10/16 送達門市。可於 App「我的訂單」查看物流進度。', scam: false,
+    why: '從官方 App 推播，沒有連結、沒有要錢，還提醒你自己進 App 查詢。', clue: '叫你「自己去官方 App 查」的，通常是正常通知。' },
+  { ch: 'Messenger', sender: '二手社團買家', ctx: '你在社團賣一台舊相機。', text: '我已經下單了，但系統說你的賣場還沒簽署金流保障協議，我的款項被凍結了。你可以聯繫這個客服幫我處理嗎？lin.ee/k8xQpZ', scam: true,
+    why: '「賣場未簽署金流協議、款項被凍結、找客服」是 165 列出的假買家騙賣家話術。接下來客服會要你開網銀「認證」。', clue: '聽到簽署、認證、解凍，就停止。' },
+  { ch: '來電', sender: '顯示 02-2xxx-xxxx', ctx: '對方自稱臺北地檢署書記官。', text: '這裡是臺北地檢署，你涉及一起洗錢案，偵查不公開不能告訴家人，請加檢察官的 LINE 做線上筆錄。', scam: true,
+    why: '檢察官不會用 LINE 做筆錄，也不會要你對家人保密。「涉案 + 保密 + 加 LINE」是假檢警的固定組合。', clue: '檢警不用 LINE 辦案。' },
+  { ch: 'Email', sender: '教務處 <registrar@ntu-example.edu.tw>', ctx: '學期初的選課期間。', text: '本學期選課結果已公告，請自行登入學校官網的選課系統查詢。本信件無任何連結與附件。', scam: false,
+    why: '沒有連結、沒有附件、沒有要求任何資料，只提醒你自己登入官網查詢。', clue: '正規單位會叫你「自己去官網」，而不是「點這裡」。' },
+  { ch: 'IG 廣告', sender: '財經學院｜AI 量化', ctx: '你在 IG 滑到的贊助貼文。', text: 'AI 量化機器人，每日穩定獲利 3%，零風險！留言 +1 送你免費投資秘笈，加助理 LINE 領取。', scam: true,
+    why: '「免費投資秘笈、AI 機器人、穩定獲利、零風險」幾乎每一句都在 165 的假投資話術清單上。9 月假投資平均每件損失約 120 萬元。', clue: '網友不會幫你賺錢。' },
+  { ch: '簡訊', sender: '○○銀行', ctx: '你昨晚確實在網路上買了東西。', text: '【○○銀行】您的信用卡於10/13刷卡NT$12,800（網路交易）。如非本人交易，請撥打卡片背面客服專線。', scam: false,
+    why: '沒有連結、沒要你回撥訊息裡的號碼，而是叫你打卡片背面的客服電話，這是正確做法。', clue: '要查證，就打卡片背面的電話。' },
+  { ch: 'LINE', sender: '交友 App 認識的網友', ctx: '你們約好今天第一次見面。', text: '見面前我們經理要確認你不是警察，你先到 ATM 領錢拍明細給他，再買 5000 點的點數當保證金，見面就退你。', scam: true,
+    why: '165 打詐儀錶板 10 月的最新案例就是這套劇本：經理審核、ATM 明細證明不是警察、點數當保證金。', clue: '見面前要錢、要點數，就是詐騙。' },
+];
+
+const TYPE_CARDS = [
+  { name: '假網拍', tag: '9 月件數第 1', lines: ['要求用 LINE 私下交易、先匯款保留商品', '提供一頁式網站下單', '說可以面交但總約不到，改成匯款寄送'], rule: '離開平台、私下匯款、一頁式網站，看到一個就停手。' },
+  { name: '假投資', tag: '9 月財損第 1', lines: ['免費領投資秘笈、LINE 群組操盤教學', '內線消息、跟大戶當沖、AI 投資機器人', '出金前要先繳稅金、自證金、風險認證金'], rule: '網友不會幫你賺錢；出金要先付錢，一定是詐騙。' },
+  { name: '假交友（投資詐財）', tag: '平均每件 114 萬', lines: ['異國單身、海外高薪、照片滿是名牌名車', '邀你一起投資虛擬貨幣、合租 AI 算力機', '提領獲利要「高級認證」、繳保證金'], rule: '沒見過面的人開始談投資，就是詐騙劇本。' },
+  { name: '色情應召詐財', tag: '9 月件數第 3', lines: ['見面前要先繳保證金給「經理」', '要你證明自己不是警察', '要你買遊戲點數拍照回傳'], rule: '見面前要錢、要點數，一律是詐騙。' },
+  { name: '釣魚連結', tag: '9 月件數第 5', lines: ['包裹配送失敗，點連結更新地址', '帳戶異常已凍結，點連結驗證身分', '退稅尚未領取，點連結輸入帳戶'], rule: '急著要你點連結輸入資料，改從官方 APP 自己查。' },
+  { name: '假冒機構（假檢警）', tag: '高財損手法', lines: ['說你身分遭冒用、涉及洗錢', '偵查不公開，不能告訴任何人', '加 LINE 做筆錄、監管帳戶、交出存款'], rule: '檢警、法院不會用 LINE 辦案，也不會要你交錢。' },
+  { name: '假買家騙賣家', tag: '賣家最常中', lines: ['賣場未簽署某某條例，訂單被禁售', '買家款項被凍結，請聯絡客服', '打開網銀「簽署保障合約」，次日會回沖'], rule: '真正的平台不會叫你開網銀認證。' },
+  { name: '猜猜我是誰／盜用 LINE', tag: '熟人名義', lines: ['我換新號碼了，記得更新通訊錄', '聲音不像？我感冒了', '手頭有點緊，能不能先借一點'], rule: '用通訊錄裡原本存的電話打給本人確認。' },
+  { name: '假求職（人頭帳戶）', tag: '小心觸法', lines: ['家庭代工、幫企業節稅、協助衝流量', '寄一張提款卡可領補貼金', '有款項匯入就幫忙買虛擬貨幣轉出'], rule: '交出提款卡或幫人收款，你會變成人頭帳戶。' },
+];
+
+const STATS = [
+  { name: '假網拍', cases: 3513, loss: 320660000, inv: false },
+  { name: '假投資', cases: 913, loss: 1099959000, inv: true },
+  { name: '色情應召詐財', cases: 830, loss: 163289000, inv: false },
+  { name: '假交友（投資詐財）', cases: 814, loss: 931291000, inv: true },
+  { name: '釣魚連結', cases: 804, loss: 59780000, inv: false },
+];
+</script>
+
+<script>
+/* ===== 介面 ===== */
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let lastResult = null;
+let lastLevel = null;
+
+function renderMarked(text, r) {
+  const ruleNum = new Map();
+  let n = 0;
+  // 整體判定為「未見紅旗」時，零星的弱關鍵字不上螢光筆，避免誤導
+  const spans = r.level === 'none' ? r.spans.filter(s => !s.c) : r.spans;
+  for (const s of spans) if (s.c && !ruleNum.has(s.rule)) ruleNum.set(s.rule, ++n);
+  let out = '';
+  let pos = 0;
+  for (const s of spans) {
+    out += esc(text.slice(pos, s.start));
+    const seg = esc(text.slice(s.start, s.end));
+    if (s.url) out += '<span class="url-mark' + (s.ok ? ' ok' : '') + '">' + seg + '</span>';
+    else if (s.safe) out += '<span class="neg-mark">' + seg + '</span>';
+    else out += '<mark class="hl ' + CATS[s.c].cls + '">' + seg + '<sup>' + ruleNum.get(s.rule) + '</sup></mark>';
+    pos = s.end;
+  }
+  out += esc(text.slice(pos));
+  return { html: out || '<span style="color:var(--ink-3)">（沒有內容）</span>', ruleNum };
+}
+
+function run() {
+  const text = $('msg').value;
+  const r = analyze(text, { sender: $('sender').value, last3: $('last3').value });
+  lastResult = { text, r };
+  const lv = LEVELS[r.level];
+  const stamp = $('stamp');
+  stamp.className = 'stamp ' + lv.cls;
+  stamp.innerHTML = esc(text.trim() ? lv.label : '待檢驗') + '<small>' + (text.trim() ? lv.en : 'STANDBY') + '</small>';
+  if (text.trim() && lastLevel !== r.level) { void stamp.offsetWidth; stamp.classList.add('pop'); }
+  lastLevel = text.trim() ? r.level : null;
+  $('meterFill').style.width = (text.trim() ? Math.max(r.score, r.level === 'none' ? 3 : 8) : 0) + '%';
+  $('meterFill').style.background = lv.color;
+
+  const catCount = Object.keys(r.cats).length;
+  const flagCount = new Set(r.hits.map(h => h.rule)).size + r.urls.reduce((a, u) => a + u.flags.filter(f => f.lv === 'bad').length, 0);
+  $('summary').innerHTML = !text.trim() ? '貼上訊息後會自動檢驗。'
+    : r.level === 'none' ? '沒有出現 165 公布的詐騙話術組合。<b>這不代表一定安全</b>，對方一開口要錢或要資料就要警覺。'
+    : '找到 <b>' + flagCount + '</b> 面紅旗，橫跨 <b>' + catCount + '</b> 類' + (r.combos.length ? '，而且出現「' + esc(r.combos[0]) + '」的組合。' : '。');
+
+  const { html, ruleNum } = renderMarked(text, r);
+  $('marked').innerHTML = html;
+
+  const tg = $('typeguess');
+  if (r.type && r.level !== 'none') {
+    tg.hidden = false;
+    tg.innerHTML = '<div class="group-label">最像 165 列管的手法</div><b>' + esc(r.type.name) + '</b>' + (r.type.alias ? '<span style="color:var(--ink-3);font-size:13px;margin-left:8px">' + esc(r.type.alias) + '</span>' : '') + '<p>' + esc(r.type.tip) + '</p>';
+  } else tg.hidden = true;
+
+  // 紅旗清單：依規則編號排序
+  const items = [...ruleNum.entries()].sort((a, b) => a[1] - b[1]).map(([ri, num]) => {
+    const rule = RULES[ri];
+    const words = [...new Set(r.hits.filter(h => h.rule === ri).map(h => h.s))].slice(0, 3);
+    return '<div class="finding"><span class="n ' + CATS[rule.c].cls + '">' + num + '</span><span class="t"><b>' + esc(CATS[rule.c].name) + '</b>：「' + esc(words.join('」「')) + '」<span class="note">' + esc(rule.why) + '</span></span></div>';
+  });
+  for (const s of r.safes) items.push('<div class="finding"><span class="n" style="color:var(--safe)">✓</span><span class="t"><b style="color:var(--safe)">正常提醒</b>：「' + esc(s.s) + '」<span class="note">' + esc(s.why) + '</span></span></div>');
+  $('findings').innerHTML = items.length ? '<div class="group-label">逐條批註</div>' + items.join('') : '';
+
+  $('urlBox').hidden = !r.urls.length;
+  $('urlChecks').innerHTML = r.urls.map(u =>
+    '<div class="url-host">' + esc(u.raw) + '</div>' + u.flags.map(f => '<div class="check ' + f.lv + '"><span class="i">' + (f.lv === 'ok' ? '✓' : f.lv === 'bad' ? '✕' : '!') + '</span><span>' + esc(f.t) + '</span></div>').join('')
+  ).join('');
+
+  $('govBox').hidden = !r.gov;
+  if (r.gov) $('govChecks').innerHTML = r.gov.checks.map(c => '<div class="check ' + c.lv + '"><span class="i">' + (c.lv === 'ok' ? '✓' : c.lv === 'bad' ? '✕' : '!') + '</span><span>' + esc(c.t) + '</span></div>').join('');
+
+  $('actions').innerHTML = (text.trim() ? buildActions(r) : ['貼上訊息，或先點上面的範例。']).map(a => '<li>' + esc(a) + '</li>').join('');
+}
+
+function familyText() {
+  if (!lastResult || !lastResult.text.trim()) return '';
+  const { text, r } = lastResult;
+  const lv = LEVELS[r.level];
+  const cats = CAT_ORDER.filter(k => r.cats[k]).map(k => CATS[k].name);
+  const lines = ['【防詐提醒】我用「先別匯款」檢查了一則訊息，結果：' + lv.label + '。'];
+  lines.push('訊息開頭：「' + text.trim().slice(0, 40).replace(/\s+/g, ' ') + (text.trim().length > 40 ? '…' : '') + '」');
+  if (cats.length) lines.push('紅旗類型：' + cats.join('、'));
+  if (r.type && r.level !== 'none') lines.push('最像：' + r.type.name + '。' + r.type.tip);
+  lines.push('提醒：不要點連結、不要匯款或買點數、不要給驗證碼。不確定就打 165（免付費）。');
+  return lines.join('\n');
+}
+
+let toastTimer;
+function toast(msg) { $('toast').textContent = msg; clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').textContent = '', 3200); }
+$('copyBtn').addEventListener('click', () => {
+  const t = familyText();
+  if (!t) { toast('先貼上一則訊息。'); return; }
+  const fb = $('copyFallback');
+  const showFallback = () => { fb.hidden = false; fb.value = t; fb.focus(); fb.select(); toast('無法自動複製，文字已選取，請按 Ctrl+C。'); };
+  try {
+    navigator.clipboard.writeText(t).then(() => { fb.hidden = true; toast('已複製，可以貼到 LINE 給家人。'); }, showFallback);
+  } catch (e) { showFallback(); }
+});
+
+// 範例按鈕
+function loadSample(s, tagText) {
+  $('msg').value = s.text;
+  $('sender').value = s.sender || '';
+  $('last3').value = s.last3 || '';
+  $('sampleTag').textContent = tagText || '';
+  document.querySelectorAll('#samples .chip-btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === s.id)));
+  run();
+}
+$('samples').innerHTML = SAMPLES.map(s => '<button class="chip-btn" type="button" data-id="' + s.id + '" aria-pressed="false">' + esc(s.label) + '</button>').join('');
+$('samples').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const s = SAMPLES.find(x => x.id === b.dataset.id);
+  loadSample(s, '範例：' + s.label);
+});
+let deb;
+['msg', 'sender', 'last3'].forEach(id => $(id).addEventListener('input', () => {
+  clearTimeout(deb);
+  document.querySelectorAll('#samples .chip-btn').forEach(b => b.setAttribute('aria-pressed', 'false'));
+  $('sampleTag').textContent = '';
+  deb = setTimeout(run, 160);
+}));
+
+/* 測驗 */
+let qi = 0;
+const qAns = [];
+function renderQ() {
+  const q = QUIZ[qi];
+  $('qChannel').textContent = q.ch;
+  $('qCount').textContent = (qi + 1) + ' / ' + QUIZ.length;
+  $('qSender').innerHTML = esc(q.sender);
+  $('qText').textContent = q.text;
+  $('qCtx').textContent = q.ctx ? '情境：' + q.ctx : '';
+  $('qCtx').hidden = !q.ctx;
+  ['ansScam', 'ansSafe'].forEach(id => { $(id).disabled = false; $(id).classList.remove('picked'); });
+  $('dots').innerHTML = QUIZ.map((_, i) => '<i class="dot' + (i === qi ? ' cur' : qAns[i] === undefined ? '' : qAns[i] ? ' right' : ' wrong') + '"></i>').join('');
+}
+function answer(sayScam) {
+  const q = QUIZ[qi];
+  if (qAns[qi] !== undefined) return;
+  const right = sayScam === q.scam;
+  qAns[qi] = right;
+  $('ansScam').disabled = $('ansSafe').disabled = true;
+  $(sayScam ? 'ansScam' : 'ansSafe').classList.add('picked');
+  const last = qi === QUIZ.length - 1;
+  $('explain').innerHTML =
+    '<div class="explain-card"><div class="res ' + (right ? 'ok' : 'no') + '">' + (right ? '答對了' : '答錯了') + '：這則' + (q.scam ? '是詐騙' : '沒有問題') + '</div>' +
+    '<p>' + esc(q.why) + '</p><div class="clue">口訣：' + esc(q.clue) + '</div>' +
+    '<div class="btn-row"><button class="btn" type="button" id="qNext">' + (last ? '看總分' : '下一題') + '</button><button class="btn ghost" type="button" id="qToDesk">放進檢驗台看批改</button></div></div>';
+  $('qNext').addEventListener('click', () => { if (last) showScore(); else { qi++; renderQ(); $('explain').innerHTML = '<div class="explain-idle">先判斷這則訊息是真是假，答案和破解重點會出現在這裡。</div>'; } });
+  $('qToDesk').addEventListener('click', () => {
+    loadSample({ id: '', text: q.text, sender: q.sender, last3: q.last3 || '' }, '測驗第 ' + (qi + 1) + ' 題');
+    $('check').scrollIntoView({ block: 'start' });
+  });
+  renderQ();
+  $('ansScam').disabled = $('ansSafe').disabled = true;
+  $(sayScam ? 'ansScam' : 'ansSafe').classList.add('picked');
+}
+function showScore() {
+  const ok = qAns.filter(Boolean).length;
+  const msg = ok === QUIZ.length ? '全對。可以把這頁傳給家人，請他們也試試。' : ok >= 7 ? '很不錯。答錯的那幾題，回頭看看口訣。' : '詐騙劇本比想像中逼真。把手法圖鑑看一遍，再重做一次。';
+  $('explain').innerHTML = '<div class="explain-card"><div class="group-label">總分</div><div class="score-big">' + ok + ' / ' + QUIZ.length + '</div><p>' + esc(msg) + '</p><div class="btn-row"><button class="btn" type="button" id="qAgain">重新作答</button></div></div>';
+  $('qAgain').addEventListener('click', () => { qi = 0; qAns.length = 0; renderQ(); $('explain').innerHTML = '<div class="explain-idle">先判斷這則訊息是真是假，答案和破解重點會出現在這裡。</div>'; });
+}
+$('ansScam').addEventListener('click', () => answer(true));
+$('ansSafe').addEventListener('click', () => answer(false));
+
+/* 數據小倍數圖 */
+function fmtYi(v) { return (v / 1e8).toFixed(2) + ' 億'; }
+function fmtWan(v) { return (v / 1e4).toFixed(1) + ' 萬'; }
+(function chart() {
+  const maxC = Math.max(...STATS.map(s => s.cases));
+  const maxL = Math.max(...STATS.map(s => s.loss));
+  const avgs = STATS.map(s => s.loss / s.cases);
+  const maxA = Math.max(...avgs);
+  let h = '<div class="col-h" role="columnheader">手法</div><div class="col-h c1" role="columnheader">受理件數</div><div class="col-h c2" role="columnheader">財損（元）</div><div class="col-h c3" role="columnheader">平均每件損失（元）</div>';
+  STATS.forEach((s, i) => {
+    const cls = s.inv ? 'bar inv' : 'bar';
+    const tipBase = s.name + '：' + s.cases.toLocaleString() + ' 件，' + fmtYi(s.loss) + '元，平均每件 ' + fmtWan(avgs[i]) + '元';
+    h += '<div class="row-l" role="rowheader">' + esc(s.name) + '</div>';
+    h += '<div class="cell c1" role="cell" tabindex="0" data-tip="' + esc(tipBase) + '"><div class="bar-track"><div class="' + cls + '" style="width:' + (s.cases / maxC * 100) + '%"></div></div><span class="val">' + s.cases.toLocaleString() + ' 件</span></div>';
+    h += '<div class="cell c2" role="cell" tabindex="0" data-tip="' + esc(tipBase) + '"><div class="bar-track"><div class="' + cls + '" style="width:' + (s.loss / maxL * 100) + '%"></div></div><span class="val">' + fmtYi(s.loss) + '</span></div>';
+    h += '<div class="cell c3" role="cell" tabindex="0" data-tip="' + esc(tipBase) + '"><div class="bar-track"><div class="' + cls + '" style="width:' + (avgs[i] / maxA * 100) + '%"></div></div><span class="val">' + fmtWan(avgs[i]) + '</span></div>';
+  });
+  const m = $('multiples');
+  m.innerHTML = h;
+  let tipEl = null;
+  const show = cell => { hide(); tipEl = document.createElement('div'); tipEl.className = 'tip'; tipEl.textContent = cell.dataset.tip; cell.appendChild(tipEl); };
+  const hide = () => { if (tipEl) { tipEl.remove(); tipEl = null; } };
+  m.addEventListener('mouseover', e => { const c = e.target.closest('.cell'); if (c && (!tipEl || tipEl.parentNode !== c)) show(c); });
+  m.addEventListener('mouseleave', hide);
+  m.addEventListener('focusin', e => { const c = e.target.closest('.cell'); if (c) show(c); });
+  m.addEventListener('focusout', hide);
+  document.querySelector('.measure-tabs').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    m.classList.remove('show-c2', 'show-c3');
+    if (b.dataset.m !== 'c1') m.classList.add('show-' + b.dataset.m);
+    document.querySelectorAll('.measure-tabs .chip-btn').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  });
+})();
+
+/* 手法圖鑑 */
+$('typeCards').innerHTML = TYPE_CARDS.map(t =>
+  '<article class="type"><span class="tag">' + esc(t.tag) + '</span><h3>' + esc(t.name) + '</h3><ul>' + t.lines.map(l => '<li>' + esc(l) + '</li>').join('') + '</ul><p class="rule">' + esc(t.rule) + '</p></article>'
+).join('');
+
+/* NotebookLM 媒體：檔案存在才顯示 */
+function wireMedia(el, show) {
+  const pending = document.querySelector('.pending[data-for="' + el.id + '"]');
+  const ok = () => { show(true); if (pending) pending.hidden = true; };
+  const bad = () => { show(false); if (pending) pending.hidden = false; };
+  if (el.tagName === 'IMG') { if (el.complete && el.naturalWidth) ok(); else { el.addEventListener('load', ok); el.addEventListener('error', bad); } }
+  else { el.addEventListener('loadedmetadata', ok); el.addEventListener('error', bad); if (el.readyState >= 1) ok(); }
+}
+wireMedia($('mVideo'), v => $('mVideo').hidden = !v);
+
+/* 簡報翻頁 */
+(function deck() {
+  const N = 10;
+  const src = i => 'media/slides/slide-' + String(i + 1).padStart(2, '0') + '.jpg';
+  let cur = 0;
+  const thumbs = $('deckThumbs');
+  thumbs.innerHTML = Array.from({ length: N }, (_, i) => '<button type="button" data-i="' + i + '" aria-label="第 ' + (i + 1) + ' 頁"><img src="' + src(i) + '" alt="" loading="lazy"></button>').join('');
+  function show(i) {
+    cur = (i + N) % N;
+    $('deckImg').src = src(cur);
+    $('deckImg').alt = '簡報第 ' + (cur + 1) + ' 頁';
+    $('deckCount').textContent = (cur + 1) + ' / ' + N;
+    thumbs.querySelectorAll('button').forEach((b, j) => b.setAttribute('aria-current', String(j === cur)));
+  }
+  $('deckPrev').addEventListener('click', () => show(cur - 1));
+  $('deckNext').addEventListener('click', () => show(cur + 1));
+  thumbs.addEventListener('click', e => { const b = e.target.closest('button'); if (b) show(+b.dataset.i); });
+  $('deck').addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { show(cur + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { show(cur - 1); e.preventDefault(); }
+  });
+  $('deck').tabIndex = 0;
+  show(0);
+})();
+wireMedia($('mAudio'), v => $('mAudio').hidden = !v);
+wireMedia($('mInfo'), v => $('mInfoLink').hidden = !v);
+
+loadSample(SAMPLES[0], '範例：' + SAMPLES[0].label);
+renderQ();
+</script>
+
+</body></html>
